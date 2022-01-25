@@ -72,7 +72,7 @@ nes_header
 reset:
 	sei       ; mask interrupts
 	lda #0
-	sta $2000 ; disable NMI
+	sta PPUCTRL ; disable NMI
 	sta $2001 ; disable rendering 
 	sta $4015 ; disable APU sound
 	sta $4010 ; disable DMC IRQ
@@ -101,7 +101,7 @@ reset:
 	; NES is initialized, ready to begin!
 	; enable the NMI for graphical updates, and jump to our main program
 	lda #%10001000
-	sta $2000
+	sta PPUCTRL
 	jmp main
 
 ;
@@ -162,7 +162,7 @@ nmi:
 	sta $4014
 	; palettes
 	lda #%10001000
-	sta $2000 ; set horizontal nametable increment
+	sta PPUCTRL ; set horizontal nametable increment
 	lda $2002
 	lda #$3F
 	sta $2006
@@ -196,7 +196,7 @@ nmi:
 	lda scroll_nmt
 	and #%00000011 ; keep only lowest 2 bits to prevent error
 	ora #%10001000
-	sta $2000
+	sta PPUCTRL
 	lda scroll_x
 	sta $2005
 	lda scroll_y
