@@ -83,9 +83,7 @@ reset:
 	txs       ; initialize stack
 	; wait for first vblank
 	bit $2002
-	:
-		bit $2002
-		bpl :-
+	vblank_wait
 	; clear all RAM to 0
 	ram_clear
 	; place all sprites offscreen at Y=255
@@ -99,9 +97,7 @@ reset:
 		inx
 		bne :-
 	; wait for second vblank
-	:
-		bit $2002
-		bpl :-
+	vblank_wait
 	; NES is initialized, ready to begin!
 	; enable the NMI for graphical updates, and jump to our main program
 	lda #%10001000
