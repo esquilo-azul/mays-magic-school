@@ -387,8 +387,7 @@ gamepad_poll:
 	lda #0
 	sta $4016
 	; read 8 bytes from the interface at $4016
-	ldx #8
-	:
+	for_x_desc_start #8	
 		pha
 		lda $4016
 		; combine low two bits and store in carry bit
@@ -397,8 +396,7 @@ gamepad_poll:
 		pla
 		; rotate carry into gamepad variable
 		ror
-		dex
-		bne :-
+  for_x_desc_end
 	sta gamepad
 	rts
 
@@ -426,13 +424,10 @@ temp_y:   .res 1
 .segment "CODE"
 main:
 	; setup 
-	ldx #0
-	:
+  for_x_asc_start	
 		lda example_palette, X
 		sta palette, X
-		inx
-		cpx #32
-		bcc :-
+  for_x_asc_end #32
 	jsr setup_background
 	; center the cursor
 	lda #128
