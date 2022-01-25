@@ -37,6 +37,8 @@
 ; I will leave it as an exercise for the curious to understand what is going on.
 ;
 
+.include "eac-ca65-nes-lib/main.s"
+
 ;
 ; iNES header
 ;
