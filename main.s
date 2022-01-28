@@ -70,39 +70,39 @@ nes_header
 
 .segment "CODE"
 reset:
-	sei       ; mask interrupts
-	lda #0
-	sta PPUCTRL ; disable NMI
-	sta $2001 ; disable rendering 
-	sta $4015 ; disable APU sound
-	sta $4010 ; disable DMC IRQ
-	lda #$40
-	sta $4017 ; disable APU IRQ
-	cld       ; disable decimal mode
-	ldx #$FF
-	txs       ; initialize stack
-	; wait for first vblank
-	bit $2002
-	vblank_wait
-	; clear all RAM to 0
-	ram_clear
-	; place all sprites offscreen at Y=255
-	lda #255
-	ldx #0
-	:
-		sta oam, X
-		inx
-		inx
-		inx
-		inx
-		bne :-
-	; wait for second vblank
-	vblank_wait
-	; NES is initialized, ready to begin!
-	; enable the NMI for graphical updates, and jump to our main program
-	lda #%10101000
-	sta PPUCTRL
-	jmp main
+  sei       ; mask interrupts
+  lda #0
+  sta PPUCTRL ; disable NMI
+  sta $2001 ; disable rendering
+  sta $4015 ; disable APU sound
+  sta $4010 ; disable DMC IRQ
+  lda #$40
+  sta $4017 ; disable APU IRQ
+  cld       ; disable decimal mode
+  ldx #$FF
+  txs       ; initialize stack
+  ; wait for first vblank
+  bit $2002
+  vblank_wait
+  ; clear all RAM to 0
+  ram_clear
+  ; place all sprites offscreen at Y=255
+  lda #255
+  ldx #0
+  :
+    sta oam, X
+    inx
+    inx
+    inx
+    inx
+    bne :-
+  ; wait for second vblank
+  vblank_wait
+  ; NES is initialized, ready to begin!
+  ; enable the NMI for graphical updates, and jump to our main program
+  lda #%10101000
+  sta PPUCTRL
+  jmp main
 
 ;
 ; nmi routine
@@ -127,99 +127,99 @@ oam: .res 256        ; sprite OAM data to be uploaded by DMA
 
 .segment "CODE"
 nmi:
-	; save registers
-	pha
-	txa
-	pha
-	tya
-	pha
-	; prevent NMI re-entry
-	lda nmi_lock
-	beq :+
-		jmp @nmi_end
-	:
-	lda #1
-	sta nmi_lock
-	; increment frame counter
-	inc nmi_count
-	;
-	lda nmi_ready
-	bne :+ ; nmi_ready == 0 not ready to update PPU
-		jmp @ppu_update_end
-	:
-	cmp #2 ; nmi_ready == 2 turns rendering off
-	bne :+
-		lda #%00000000
-		sta $2001
-		ldx #0
-		stx nmi_ready
-		jmp @ppu_update_end
-	:
-	; sprite OAM DMA
-	ldx #0
-	stx $2003
-	lda #>oam
-	sta $4014
-	; palettes
-	lda #%10101000
-	sta PPUCTRL ; set horizontal nametable increment
-	lda $2002
-	lda #$3F
-	sta $2006
-	stx $2006 ; set PPU address to $3F00
-	ldx #0
-	:
-		lda palette, X
-		sta $2007
-		inx
-		cpx #32
-		bcc :-
-	; nametable update
-	ldx #0
-	cpx nmt_update_len
-	bcs @scroll
-	@nmt_update_loop:
-		lda nmt_update, X
-		sta $2006
-		inx
-		lda nmt_update, X
-		sta $2006
-		inx
-		lda nmt_update, X
-		sta $2007
-		inx
-		cpx nmt_update_len
-		bcc @nmt_update_loop
-	lda #0
-	sta nmt_update_len
+  ; save registers
+  pha
+  txa
+  pha
+  tya
+  pha
+  ; prevent NMI re-entry
+  lda nmi_lock
+  beq :+
+    jmp @nmi_end
+  :
+  lda #1
+  sta nmi_lock
+  ; increment frame counter
+  inc nmi_count
+  ;
+  lda nmi_ready
+  bne :+ ; nmi_ready == 0 not ready to update PPU
+    jmp @ppu_update_end
+  :
+  cmp #2 ; nmi_ready == 2 turns rendering off
+  bne :+
+    lda #%00000000
+    sta $2001
+    ldx #0
+    stx nmi_ready
+    jmp @ppu_update_end
+  :
+  ; sprite OAM DMA
+  ldx #0
+  stx $2003
+  lda #>oam
+  sta $4014
+  ; palettes
+  lda #%10101000
+  sta PPUCTRL ; set horizontal nametable increment
+  lda $2002
+  lda #$3F
+  sta $2006
+  stx $2006 ; set PPU address to $3F00
+  ldx #0
+  :
+    lda palette, X
+    sta $2007
+    inx
+    cpx #32
+    bcc :-
+  ; nametable update
+  ldx #0
+  cpx nmt_update_len
+  bcs @scroll
+  @nmt_update_loop:
+    lda nmt_update, X
+    sta $2006
+    inx
+    lda nmt_update, X
+    sta $2006
+    inx
+    lda nmt_update, X
+    sta $2007
+    inx
+    cpx nmt_update_len
+    bcc @nmt_update_loop
+  lda #0
+  sta nmt_update_len
 @scroll:
-	lda scroll_nmt
-	and #%00000011 ; keep only lowest 2 bits to prevent error
-	ora #%10101000
-	sta PPUCTRL
-	lda scroll_x
-	sta $2005
-	lda scroll_y
-	sta $2005
-	; enable rendering
-	lda #%00011110
-	sta $2001
-	; flag PPU update complete
-	ldx #0
-	stx nmi_ready
+  lda scroll_nmt
+  and #%00000011 ; keep only lowest 2 bits to prevent error
+  ora #%10101000
+  sta PPUCTRL
+  lda scroll_x
+  sta $2005
+  lda scroll_y
+  sta $2005
+  ; enable rendering
+  lda #%00011110
+  sta $2001
+  ; flag PPU update complete
+  ldx #0
+  stx nmi_ready
 @ppu_update_end:
-	; if this engine had music/sound, this would be a good place to play it
-	; unlock re-entry flag
-	lda #0
-	sta nmi_lock
+  ; if this engine had music/sound, this would be a good place to play it
+  ; unlock re-entry flag
+  lda #0
+  sta nmi_lock
 @nmi_end:
-	; restore registers and return
-	pla
-	tay
-	pla
-	tax
-	pla
-	rti
+  ; restore registers and return
+  pla
+  tay
+  pla
+  tax
+  pla
+  rti
 
 ;
 ; irq
@@ -227,7 +227,7 @@ nmi:
 
 .segment "CODE"
 irq:
-	rti
+  rti
 
 ;
 ; drawing utilities
@@ -237,29 +237,29 @@ irq:
 
 ; ppu_update: waits until next NMI, turns rendering on (if not already), uploads OAM, palette, and nametable update to PPU
 ppu_update:
-	lda #1
-	sta nmi_ready
-	:
-		lda nmi_ready
-		bne :-
-	rts
+  lda #1
+  sta nmi_ready
+  :
+    lda nmi_ready
+    bne :-
+  rts
 
 ; ppu_skip: waits until next NMI, does not update PPU
 ppu_skip:
-	lda nmi_count
-	:
-		cmp nmi_count
-		beq :-
-	rts
+  lda nmi_count
+  :
+    cmp nmi_count
+    beq :-
+  rts
 
 ; ppu_off: waits until next NMI, turns rendering off (now safe to write PPU directly via $2007)
 ppu_off:
-	lda #2
-	sta nmi_ready
-	:
-		lda nmi_ready
-		bne :-
-	rts
+  lda #2
+  sta nmi_ready
+  :
+    lda nmi_ready
+    bne :-
+  rts
 
 ; ppu_address_tile: use with rendering off, sets memory address to tile at X/Y, ready for a $2007 write
 ;   Y =  0- 31 nametable $2000
@@ -267,73 +267,73 @@ ppu_off:
 ;   Y = 64- 95 nametable $2800
 ;   Y = 96-127 nametable $2C00
 ppu_address_tile:
-	lda $2002 ; reset latch
-	tya
-	lsr
-	lsr
-	lsr
-	ora #$20 ; high bits of Y + $20
-	sta $2006
-	tya
-	asl
-	asl
-	asl
-	asl
-	asl
-	sta temp
-	txa
-	ora temp
-	sta $2006 ; low bits of Y + X
-	rts
+  lda $2002 ; reset latch
+  tya
+  lsr
+  lsr
+  lsr
+  ora #$20 ; high bits of Y + $20
+  sta $2006
+  tya
+  asl
+  asl
+  asl
+  asl
+  asl
+  sta temp
+  txa
+  ora temp
+  sta $2006 ; low bits of Y + X
+  rts
 
 ; ppu_update_tile: can be used with rendering on, sets the tile at X/Y to tile A next time you call ppu_update
 ppu_update_tile:
-	pha ; temporarily store A on stack
-	txa
-	pha ; temporarily store X on stack
-	ldx nmt_update_len
-	tya
-	lsr
-	lsr
-	lsr
-	ora #$20 ; high bits of Y + $20
-	sta nmt_update, X
-	inx
-	tya
-	asl
-	asl
-	asl
-	asl
-	asl
-	sta temp
-	pla ; recover X value (but put in A)
-	ora temp
-	sta nmt_update, X
-	inx
-	pla ; recover A value (tile)
-	sta nmt_update, X
-	inx
-	stx nmt_update_len
-	rts
+  pha ; temporarily store A on stack
+  txa
+  pha ; temporarily store X on stack
+  ldx nmt_update_len
+  tya
+  lsr
+  lsr
+  lsr
+  ora #$20 ; high bits of Y + $20
+  sta nmt_update, X
+  inx
+  tya
+  asl
+  asl
+  asl
+  asl
+  asl
+  sta temp
+  pla ; recover X value (but put in A)
+  ora temp
+  sta nmt_update, X
+  inx
+  pla ; recover A value (tile)
+  sta nmt_update, X
+  inx
+  stx nmt_update_len
+  rts
 
 ; ppu_update_byte: like ppu_update_tile, but X/Y makes the high/low bytes of the PPU address to write
 ;    this may be useful for updating attribute tiles
 ppu_update_byte:
-	pha ; temporarily store A on stack
-	tya
-	pha ; temporarily store Y on stack
-	ldy nmt_update_len
-	txa
-	sta nmt_update, Y
-	iny
-	pla ; recover Y value (but put in Y)
-	sta nmt_update, Y
-	iny
-	pla ; recover A value (byte)
-	sta nmt_update, Y
-	iny
-	sty nmt_update_len
-	rts
+  pha ; temporarily store A on stack
+  tya
+  pha ; temporarily store Y on stack
+  ldy nmt_update_len
+  txa
+  sta nmt_update, Y
+  iny
+  pla ; recover Y value (but put in Y)
+  sta nmt_update, Y
+  iny
+  pla ; recover A value (byte)
+  sta nmt_update, Y
+  iny
+  sty nmt_update_len
+  rts
 
 ;
 ; gamepad
@@ -356,24 +356,24 @@ gamepad: .res 1
 ;   This only reads the first gamepad, and also if DPCM samples are played they can
 ;   conflict with gamepad reading, which may give incorrect results.
 gamepad_poll:
-	; strobe the gamepad to latch current button state
-	lda #1
-	sta $4016
-	lda #0
-	sta $4016
-	; read 8 bytes from the interface at $4016
-	for_x_desc_start #8	
-		pha
-		lda $4016
-		; combine low two bits and store in carry bit
-		and #%00000011
-		cmp #%00000001
-		pla
-		; rotate carry into gamepad variable
-		ror
+  ; strobe the gamepad to latch current button state
+  lda #1
+  sta $4016
+  lda #0
+  sta $4016
+  ; read 8 bytes from the interface at $4016
+  for_x_desc_start #8
+    pha
+    lda $4016
+    ; combine low two bits and store in carry bit
+    and #%00000011
+    cmp #%00000001
+    pla
+    ; rotate carry into gamepad variable
+    ror
   for_x_desc_end
-	sta gamepad
-	rts
+  sta gamepad
+  rts
 
 ;
 ; main
@@ -398,346 +398,346 @@ temp_y:   .res 1
 
 .segment "CODE"
 main:
-	; setup 
-  for_x_asc_start	
-		lda example_palette, X
-		sta palette, X
+  ; setup
+  for_x_asc_start
+    lda example_palette, X
+    sta palette, X
   for_x_asc_end #32
-	jsr setup_background
-	; center the cursor
-	lda #128
-	sta cursor_x
-	lda #120
-	sta cursor_y
-	; show the screen
-	jsr draw_cursor
-	jsr ppu_update
-	; main loop
+  jsr setup_background
+  ; center the cursor
+  lda #128
+  sta cursor_x
+  lda #120
+  sta cursor_y
+  ; show the screen
+  jsr draw_cursor
+  jsr ppu_update
+  ; main loop
 @loop:
-	; read gamepad
-	jsr gamepad_poll
-	; respond to gamepad state
-	lda gamepad
-	and #PAD_START
-	beq :+
-		jsr push_start
-		jmp @draw ; start trumps everything, don't check other buttons
-	:
-	jsr release_start ; releasing start restores scroll
-	lda gamepad
-	and #PAD_U
-	beq :+
-		jsr push_u
-	:
-	lda gamepad
-	and #PAD_D
-	beq :+
-		jsr push_d
-	:
-	lda gamepad
-	and #PAD_L
-	beq :+
-		jsr push_l
-	:
-	lda gamepad
-	and #PAD_R
-	beq :+
-		jsr push_r
-	:
-	lda gamepad
-	and #PAD_SELECT
-	beq :+
-		jsr push_select
-	:
-	lda gamepad
-	and #PAD_B
-	beq :+
-		jsr push_b
-	:
-	lda gamepad
-	and #PAD_A
-	beq :+
-		jsr push_a
-	:
+  ; read gamepad
+  jsr gamepad_poll
+  ; respond to gamepad state
+  lda gamepad
+  and #PAD_START
+  beq :+
+    jsr push_start
+    jmp @draw ; start trumps everything, don't check other buttons
+  :
+  jsr release_start ; releasing start restores scroll
+  lda gamepad
+  and #PAD_U
+  beq :+
+    jsr push_u
+  :
+  lda gamepad
+  and #PAD_D
+  beq :+
+    jsr push_d
+  :
+  lda gamepad
+  and #PAD_L
+  beq :+
+    jsr push_l
+  :
+  lda gamepad
+  and #PAD_R
+  beq :+
+    jsr push_r
+  :
+  lda gamepad
+  and #PAD_SELECT
+  beq :+
+    jsr push_select
+  :
+  lda gamepad
+  and #PAD_B
+  beq :+
+    jsr push_b
+  :
+  lda gamepad
+  and #PAD_A
+  beq :+
+    jsr push_a
+  :
 @draw:
-	; draw everything and finish the frame
-	jsr draw_cursor
-	jsr ppu_update
-	; keep doing this forever!
-	jmp @loop
+  ; draw everything and finish the frame
+  jsr draw_cursor
+  jsr ppu_update
+  ; keep doing this forever!
+  jmp @loop
 
 push_u:
-	dec cursor_y
-	; Y wraps at 240
-	lda cursor_y
-	cmp #240
-	bcc :+
-		lda #239
-		sta cursor_y
-	:
-	rts
+  dec cursor_y
+  ; Y wraps at 240
+  lda cursor_y
+  cmp #240
+  bcc :+
+    lda #239
+    sta cursor_y
+  :
+  rts
 
 push_d:
-	inc cursor_y
-	; Y wraps at 240
-	lda cursor_y
-	cmp #240
-	bcc :+
-		lda #0
-		sta cursor_y
-	:
-	rts
+  inc cursor_y
+  ; Y wraps at 240
+  lda cursor_y
+  cmp #240
+  bcc :+
+    lda #0
+    sta cursor_y
+  :
+  rts
 
 push_l:
-	dec cursor_x
-	rts
+  dec cursor_x
+  rts
 
 push_r:
-	inc cursor_x
-	rts
+  inc cursor_x
+  rts
 
 push_select:
-	; turn off rendering so we can manually update entire nametable
-	jsr ppu_off
-	jsr setup_background
-	; wait for user to release select before continuing
-	:
-		jsr gamepad_poll
-		lda gamepad
-		and #PAD_SELECT
-		bne :-
-	rts
+  ; turn off rendering so we can manually update entire nametable
+  jsr ppu_off
+  jsr setup_background
+  ; wait for user to release select before continuing
+  :
+    jsr gamepad_poll
+    lda gamepad
+    and #PAD_SELECT
+    bne :-
+  rts
 
 push_start:
-	inc scroll_x
-	inc scroll_y
-	; Y wraps at 240
-	lda scroll_y
-	cmp #240
-	bcc :+
-		lda #0
-		sta scroll_y
-	:
-	; when X rolls over, toggle the high bit of nametable select
-	lda scroll_x
-	bne :+
-		lda scroll_nmt
-		eor #$01
-		sta scroll_nmt
-	:
-	rts
+  inc scroll_x
+  inc scroll_y
+  ; Y wraps at 240
+  lda scroll_y
+  cmp #240
+  bcc :+
+    lda #0
+    sta scroll_y
+  :
+  ; when X rolls over, toggle the high bit of nametable select
+  lda scroll_x
+  bne :+
+    lda scroll_nmt
+    eor #$01
+    sta scroll_nmt
+  :
+  rts
 
 release_start:
-	lda #0
-	sta scroll_x
-	sta scroll_y
-	sta scroll_nmt
-	rts
+  lda #0
+  sta scroll_x
+  sta scroll_y
+  sta scroll_nmt
+  rts
 
 push_b:
-	jsr snap_cursor
-	lda cursor_x
-	lsr
-	lsr
-	lsr
-	tax ; X = cursor_x / 8
-	lda cursor_y
-	lsr
-	lsr
-	lsr
-	tay ; Y = cursor_y / 8
-	lda #4
-	jsr ppu_update_tile ; puts tile 4 at X/Y
-	rts
+  jsr snap_cursor
+  lda cursor_x
+  lsr
+  lsr
+  lsr
+  tax ; X = cursor_x / 8
+  lda cursor_y
+  lsr
+  lsr
+  lsr
+  tay ; Y = cursor_y / 8
+  lda #4
+  jsr ppu_update_tile ; puts tile 4 at X/Y
+  rts
 
 push_a:
-	jsr snap_cursor
-	lda cursor_x
-	lsr
-	lsr
-	lsr
-	sta temp_x ; cursor_x / 8
-	lda cursor_y
-	lsr
-	lsr
-	lsr
-	sta temp_y ; cursor_y / 8
-	; draw a ring of 8 tiles around the cursor
-	dec temp_x ; x-1
-	dec temp_y ; y-1
-	ldx temp_x
-	ldy temp_y
-	lda #5
-	jsr ppu_update_tile
-	inc temp_x ; x
-	ldx temp_x
-	ldy temp_y
-	lda #6
-	jsr ppu_update_tile
-	inc temp_x ; x+1
-	ldx temp_x
-	ldy temp_y
-	lda #5
-	jsr ppu_update_tile
-	dec temp_x
-	dec temp_x ; x-1
-	inc temp_y ; y
-	ldx temp_x
-	ldy temp_y
-	lda #6
-	jsr ppu_update_tile
-	inc temp_x
-	inc temp_x ; x+1
-	ldx temp_x
-	ldy temp_y
-	lda #6
-	jsr ppu_update_tile
-	dec temp_x
-	dec temp_x ; x-1
-	inc temp_y ; y+1
-	ldx temp_x
-	ldy temp_y
-	lda #5
-	jsr ppu_update_tile
-	inc temp_x ; x
-	ldx temp_x
-	ldy temp_y
-	lda #6
-	jsr ppu_update_tile
-	inc temp_x ; x+1
-	ldx temp_x
-	ldy temp_y
-	lda #5
-	jsr ppu_update_tile
-	rts
+  jsr snap_cursor
+  lda cursor_x
+  lsr
+  lsr
+  lsr
+  sta temp_x ; cursor_x / 8
+  lda cursor_y
+  lsr
+  lsr
+  lsr
+  sta temp_y ; cursor_y / 8
+  ; draw a ring of 8 tiles around the cursor
+  dec temp_x ; x-1
+  dec temp_y ; y-1
+  ldx temp_x
+  ldy temp_y
+  lda #5
+  jsr ppu_update_tile
+  inc temp_x ; x
+  ldx temp_x
+  ldy temp_y
+  lda #6
+  jsr ppu_update_tile
+  inc temp_x ; x+1
+  ldx temp_x
+  ldy temp_y
+  lda #5
+  jsr ppu_update_tile
+  dec temp_x
+  dec temp_x ; x-1
+  inc temp_y ; y
+  ldx temp_x
+  ldy temp_y
+  lda #6
+  jsr ppu_update_tile
+  inc temp_x
+  inc temp_x ; x+1
+  ldx temp_x
+  ldy temp_y
+  lda #6
+  jsr ppu_update_tile
+  dec temp_x
+  dec temp_x ; x-1
+  inc temp_y ; y+1
+  ldx temp_x
+  ldy temp_y
+  lda #5
+  jsr ppu_update_tile
+  inc temp_x ; x
+  ldx temp_x
+  ldy temp_y
+  lda #6
+  jsr ppu_update_tile
+  inc temp_x ; x+1
+  ldx temp_x
+  ldy temp_y
+  lda #5
+  jsr ppu_update_tile
+  rts
 
 ; snap_cursor: snap cursor to nearest tile
 snap_cursor:
-	lda cursor_x
-	clc
-	adc #4
-	and #$F8
-	sta cursor_x
-	lda cursor_y
-	clc
-	adc #4
-	and #$F8
-	sta cursor_y
-	; Y wraps at 240
-	cmp #240
-	bcc :+
-		lda #0
-		sta cursor_y
-	:
-	rts
+  lda cursor_x
+  clc
+  adc #4
+  and #$F8
+  sta cursor_x
+  lda cursor_y
+  clc
+  adc #4
+  and #$F8
+  sta cursor_y
+  ; Y wraps at 240
+  cmp #240
+  bcc :+
+    lda #0
+    sta cursor_y
+  :
+  rts
 
 draw_cursor:
-	; four sprites centred around the currently selected tile
-	; y position (note, needs to be one line higher than sprite's appearance)
-	lda cursor_y
-	sec
-	sbc #5 ; Y-5
-	sta sprite_y(0)
-	sta sprite_y(1)
-	; tile
-	lda #1
-	sta sprite_i(0)
-	sta sprite_i(1)
-	; attributes
-	lda #%00000000 ; no flip
-	sta sprite_a(0)
-	lda #%01000000 ; horizontal flip
-	sta sprite_a(1)
-	; x position
-	lda cursor_x
-	sec
-	sbc #4 ; X-4
-	sta sprite_x(0)
-	lda cursor_x
-	clc
-	adc #4 ; X+4
-	sta sprite_x(1)
-	rts
+  ; four sprites centred around the currently selected tile
+  ; y position (note, needs to be one line higher than sprite's appearance)
+  lda cursor_y
+  sec
+  sbc #5 ; Y-5
+  sta sprite_y(0)
+  sta sprite_y(1)
+  ; tile
+  lda #1
+  sta sprite_i(0)
+  sta sprite_i(1)
+  ; attributes
+  lda #%00000000 ; no flip
+  sta sprite_a(0)
+  lda #%01000000 ; horizontal flip
+  sta sprite_a(1)
+  ; x position
+  lda cursor_x
+  sec
+  sbc #4 ; X-4
+  sta sprite_x(0)
+  lda cursor_x
+  clc
+  adc #4 ; X+4
+  sta sprite_x(1)
+  rts
 
 setup_background:
-	; first nametable, start by clearing to empty
-	lda $2002 ; reset latch
-	lda #$20
-	sta $2006
-	lda #$00
-	sta $2006
-	; empty nametable
-	lda #0
-	ldy #30 ; 30 rows
-	:
-		ldx #32 ; 32 columns
-		:
-			sta $2007
-			dex
-			bne :-
-		dey
-		bne :--
-	; set all attributes to 0
-	ldx #64 ; 64 bytes
-	:
-		sta $2007
-		dex
-		bne :-
-	; fill in an area in the middle with 1/2 checkerboard
-	lda #1
-	ldy #8 ; start at row 8
-	:
-		pha ; temporarily store A, it will be clobbered by ppu_address_tile routine
-		ldx #8 ; start at column 8
-		jsr ppu_address_tile
-		pla ; recover A
-		; write a line of checkerboard
-		ldx #8
-		:
-			sta $2007
-			eor #$3
-			inx
-			cpx #(32-8)
-			bcc :-
-		eor #$3
-		iny
-		cpy #(30-8)
-		bcc :--
-	; second nametable, fill with simple pattern
-	lda #$24
-	sta $2006
-	lda #$00
-	sta $2006
-	lda #$00
-	ldy #30
-	:
-		ldx #32
-		:
-			sta $2007
-			clc
-			adc #1
-			and #3
-			dex
-			bne :-
-		clc
-		adc #1
-		and #3
-		dey
-		bne :--
-	; 4 stripes of attribute
-	lda #0
-	ldy #4
-	:
-		ldx #16
-		:
-			sta $2007
-			dex
-			bne :-
-		clc
-		adc #%01010101
-		dey
-		bne :--
-	rts
+  ; first nametable, start by clearing to empty
+  lda $2002 ; reset latch
+  lda #$20
+  sta $2006
+  lda #$00
+  sta $2006
+  ; empty nametable
+  lda #0
+  ldy #30 ; 30 rows
+  :
+    ldx #32 ; 32 columns
+    :
+      sta $2007
+      dex
+      bne :-
+    dey
+    bne :--
+  ; set all attributes to 0
+  ldx #64 ; 64 bytes
+  :
+    sta $2007
+    dex
+    bne :-
+  ; fill in an area in the middle with 1/2 checkerboard
+  lda #1
+  ldy #8 ; start at row 8
+  :
+    pha ; temporarily store A, it will be clobbered by ppu_address_tile routine
+    ldx #8 ; start at column 8
+    jsr ppu_address_tile
+    pla ; recover A
+    ; write a line of checkerboard
+    ldx #8
+    :
+      sta $2007
+      eor #$3
+      inx
+      cpx #(32-8)
+      bcc :-
+    eor #$3
+    iny
+    cpy #(30-8)
+    bcc :--
+  ; second nametable, fill with simple pattern
+  lda #$24
+  sta $2006
+  lda #$00
+  sta $2006
+  lda #$00
+  ldy #30
+  :
+    ldx #32
+    :
+      sta $2007
+      clc
+      adc #1
+      and #3
+      dex
+      bne :-
+    clc
+    adc #1
+    and #3
+    dey
+    bne :--
+  ; 4 stripes of attribute
+  lda #0
+  ldy #4
+  :
+    ldx #16
+    :
+      sta $2007
+      dex
+      bne :-
+    clc
+    adc #%01010101
+    dey
+    bne :--
+  rts
 
 ;
 ; end of file
