@@ -100,7 +100,7 @@ reset:
 	vblank_wait
 	; NES is initialized, ready to begin!
 	; enable the NMI for graphical updates, and jump to our main program
-	lda #%10001000
+	lda #%10101000
 	sta PPUCTRL
 	jmp main
 
@@ -161,7 +161,7 @@ nmi:
 	lda #>oam
 	sta $4014
 	; palettes
-	lda #%10001000
+	lda #%10101000
 	sta PPUCTRL ; set horizontal nametable increment
 	lda $2002
 	lda #$3F
@@ -195,7 +195,7 @@ nmi:
 @scroll:
 	lda scroll_nmt
 	and #%00000011 ; keep only lowest 2 bits to prevent error
-	ora #%10001000
+	ora #%10101000
 	sta PPUCTRL
 	lda scroll_x
 	sta $2005
@@ -639,37 +639,24 @@ draw_cursor:
 	sbc #5 ; Y-5
 	sta sprite_y(0)
 	sta sprite_y(1)
-	lda cursor_y
-	clc
-	adc #3 ; Y+3
-	sta sprite_y(2)
-	sta sprite_y(3)
 	; tile
 	lda #1
 	sta sprite_i(0)
 	sta sprite_i(1)
-	sta sprite_i(2)
-	sta sprite_i(3)
 	; attributes
 	lda #%00000000 ; no flip
 	sta sprite_a(0)
 	lda #%01000000 ; horizontal flip
 	sta sprite_a(1)
-	lda #%10000000 ; vertical flip
-	sta sprite_a(2)
-	lda #%11000000 ; both flip
-	sta sprite_a(3)
 	; x position
 	lda cursor_x
 	sec
 	sbc #4 ; X-4
 	sta sprite_x(0)
-	sta sprite_x(2)
 	lda cursor_x
 	clc
 	adc #4 ; X+4
 	sta sprite_x(1)
-	sta sprite_x(3)
 	rts
 
 setup_background:
