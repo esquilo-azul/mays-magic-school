@@ -1,0 +1,7 @@
+[subrepo]
+  cmdver = 0.4.1
+  commit = 4728c85006ea6f2889b6ef24ecf2c5698a63d2bc
+  method = merge
+  parent = 92b4f4f86123aa3f14c91a3082912e636d5d461f
+  branch = master
+  remote = https://github.com/eduardobogoni/eac-ca65-nes-lib.git
