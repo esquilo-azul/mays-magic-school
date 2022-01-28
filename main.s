@@ -637,39 +637,39 @@ draw_cursor:
 	lda cursor_y
 	sec
 	sbc #5 ; Y-5
-	sta oam+(0*4)+0
-	sta oam+(1*4)+0
+	sta sprite_y(0)
+	sta sprite_y(1)
 	lda cursor_y
 	clc
 	adc #3 ; Y+3
-	sta oam+(2*4)+0
-	sta oam+(3*4)+0
+	sta sprite_y(2)
+	sta sprite_y(3)
 	; tile
 	lda #1
-	sta oam+(0*4)+1
-	sta oam+(1*4)+1
-	sta oam+(2*4)+1
-	sta oam+(3*4)+1
+	sta sprite_i(0)
+	sta sprite_i(1)
+	sta sprite_i(2)
+	sta sprite_i(3)
 	; attributes
 	lda #%00000000 ; no flip
-	sta oam+(0*4)+2
+	sta sprite_a(0)
 	lda #%01000000 ; horizontal flip
-	sta oam+(1*4)+2
+	sta sprite_a(1)
 	lda #%10000000 ; vertical flip
-	sta oam+(2*4)+2
+	sta sprite_a(2)
 	lda #%11000000 ; both flip
-	sta oam+(3*4)+2
+	sta sprite_a(3)
 	; x position
 	lda cursor_x
 	sec
 	sbc #4 ; X-4
-	sta oam+(0*4)+3
-	sta oam+(2*4)+3
+	sta sprite_x(0)
+	sta sprite_x(2)
 	lda cursor_x
 	clc
 	adc #4 ; X+4
-	sta oam+(1*4)+3
-	sta oam+(3*4)+3
+	sta sprite_x(1)
+	sta sprite_x(3)
 	rts
 
 setup_background:
