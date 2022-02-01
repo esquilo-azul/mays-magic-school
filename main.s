@@ -38,6 +38,9 @@
 ;
 
 .include "eac-ca65-nes-lib/main.s"
+.include "metasprites.s"
+
+.define CURSOR_MSI #$00
 
 ;
 ; iNES header
@@ -634,29 +637,17 @@ snap_cursor:
 draw_cursor:
   ; four sprites centred around the currently selected tile
   ; y position (note, needs to be one line higher than sprite's appearance)
+  ldx CURSOR_MSI
+
   lda cursor_y
-  sec
-  sbc #5 ; Y-5
-  sta sprite_y(0)
-  sta sprite_y(1)
-  ; tile
-  lda #1
-  sta sprite_t(0)
-  sta sprite_t(1)
-  ; attributes
-  lda #%00000000 ; no flip
-  sta sprite_a(0)
-  lda #%01000000 ; horizontal flip
-  sta sprite_a(1)
-  ; x position
+  sta ms_data_y, X
+
   lda cursor_x
-  sec
-  sbc #4 ; X-4
-  sta sprite_x(0)
-  lda cursor_x
-  clc
-  adc #4 ; X+4
-  sta sprite_x(1)
+  sta ms_data_x, X
+
+  lda CURSOR_MSI
+  sta ms_curr
+  jsr ms_draw
   rts
 
 setup_background:
