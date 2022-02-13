@@ -280,7 +280,7 @@ main:
   lda gamepad
   and #PAD_R
   beq :+
-    jsr push_r
+    jsr move_cursor_right
   :
   lda gamepad
   and #PAD_SELECT
@@ -303,10 +303,6 @@ main:
   jsr ppu_update
   ; keep doing this forever!
   jmp @loop
-
-push_r:
-  inc cursor_x
-  rts
 
 push_select:
   ; turn off rendering so we can manually update entire nametable

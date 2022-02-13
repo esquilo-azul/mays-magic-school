@@ -21,6 +21,10 @@ move_cursor_left:
   dec cursor_x
   rts
 
+move_cursor_right:
+  inc cursor_x
+  rts
+
 move_cursor_up:
   dec cursor_y
   ; Y wraps at 240
