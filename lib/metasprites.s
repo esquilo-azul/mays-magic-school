@@ -14,6 +14,15 @@ ms_curr_sprite_1: .res 1
 
 .segment "CODE"
 
+ms_process:
+  ldx ms_curr
+  lda ms_type, X
+  cmp #DISABLED_MSTI
+  beq @end_routine
+  jsr ms_update_sprites
+@end_routine:
+  rts
+
 ms_update_sprites:
   ; two sprites centred around the currently selected tile
   ; y position (note, needs to be one line higher than sprite's appearance)

@@ -75,8 +75,8 @@ update_cursor:
   lda CURSOR_MSI
   sta ms_curr
 
-@call_draw:
-  jsr ms_update_sprites
+@process_metasprite:
+  jsr ms_process
 
 @return:
   rts
