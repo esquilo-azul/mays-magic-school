@@ -20,6 +20,18 @@ ms_clear:
   sta ms_type, X
   rts
 
+ms_clear_all:
+  lda #0
+  sta ms_curr
+@loop:
+  jsr ms_clear
+
+  inc ms_curr
+  cmp ms_curr
+  bcc @loop
+
+  rts
+
 ms_process:
   ldx ms_curr
   lda ms_type, X

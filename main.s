@@ -249,6 +249,7 @@ main:
   lda #120
   sta cursor_y
   ; show the screen
+  jsr ms_clear_all
   jsr update_cursor
   jsr ppu_update
   ; main loop
