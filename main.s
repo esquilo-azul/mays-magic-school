@@ -270,7 +270,7 @@ main:
   lda gamepad
   and #PAD_D
   beq :+
-    jsr push_d
+    jsr move_cursor_down
   :
   lda gamepad
   and #PAD_L
@@ -303,17 +303,6 @@ main:
   jsr ppu_update
   ; keep doing this forever!
   jmp @loop
-
-push_d:
-  inc cursor_y
-  ; Y wraps at 240
-  lda cursor_y
-  cmp #240
-  bcc :+
-    lda #0
-    sta cursor_y
-  :
-  rts
 
 push_l:
   dec cursor_x

@@ -6,6 +6,17 @@ cursor_y: .res 1
 
 .segment "CODE"
 
+move_cursor_down:
+  inc cursor_y
+  ; Y wraps at 240
+  lda cursor_y
+  cmp #240
+  bcc :+
+    lda #0
+    sta cursor_y
+  :
+  rts
+
 move_cursor_up:
   dec cursor_y
   ; Y wraps at 240
