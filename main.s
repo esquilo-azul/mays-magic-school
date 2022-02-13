@@ -641,8 +641,8 @@ draw_cursor:
   sta sprite_y(1)
   ; tile
   lda #1
-  sta sprite_i(0)
-  sta sprite_i(1)
+  sta sprite_t(0)
+  sta sprite_t(1)
   ; attributes
   lda #%00000000 ; no flip
   sta sprite_a(0)
