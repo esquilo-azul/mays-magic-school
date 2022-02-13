@@ -14,6 +14,12 @@ ms_curr_sprite_1: .res 1
 
 .segment "CODE"
 
+ms_clear:
+  lda #DISABLED_MSTI
+  ldx ms_curr
+  sta ms_type, X
+  rts
+
 ms_process:
   ldx ms_curr
   lda ms_type, X
