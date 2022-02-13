@@ -39,8 +39,7 @@
 
 .include "eac-ca65-nes-lib/main.s"
 .include "lib/metasprites.s"
-
-.define CURSOR_MSI #$00
+.include "lib/cursor.s"
 
 ;
 ; iNES header
@@ -376,8 +375,6 @@ example_palette:
 .byte $0F,$12,$22,$32 ; sp3 marine
 
 .segment "ZEROPAGE"
-cursor_x: .res 1
-cursor_y: .res 1
 temp_x:   .res 1
 temp_y:   .res 1
 
@@ -594,42 +591,6 @@ push_a:
   ldy temp_y
   lda #5
   jsr ppu_update_tile
-  rts
-
-; snap_cursor: snap cursor to nearest tile
-snap_cursor:
-  lda cursor_x
-  clc
-  adc #4
-  and #$F8
-  sta cursor_x
-  lda cursor_y
-  clc
-  adc #4
-  and #$F8
-  sta cursor_y
-  ; Y wraps at 240
-  cmp #240
-  bcc :+
-    lda #0
-    sta cursor_y
-  :
-  rts
-
-draw_cursor:
-  ; four sprites centred around the currently selected tile
-  ; y position (note, needs to be one line higher than sprite's appearance)
-  ldx CURSOR_MSI
-
-  lda cursor_y
-  sta ms_data_y, X
-
-  lda cursor_x
-  sta ms_data_x, X
-
-  lda CURSOR_MSI
-  sta ms_curr
-  jsr ms_draw
   rts
 
 setup_background:
