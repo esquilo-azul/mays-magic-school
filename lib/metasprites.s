@@ -13,7 +13,7 @@ ms_curr_sprite_1: .res 1
 
 .segment "CODE"
 
-ms_draw:
+ms_update_sprites:
   ; two sprites centred around the currently selected tile
   ; y position (note, needs to be one line higher than sprite's appearance)
   jsr ms_sprites_set

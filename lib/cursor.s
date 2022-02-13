@@ -72,7 +72,7 @@ update_cursor:
   sta ms_curr
 
 @call_draw:
-  jsr ms_draw
+  jsr ms_update_sprites
 
 @return:
   rts
