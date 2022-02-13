@@ -6,6 +6,11 @@ cursor_y: .res 1
 
 .segment "CODE"
 
+init_cursor:
+  lda #CURSOR_MSTI
+  ldx CURSOR_MSI
+  sta ms_type, X
+
 move_cursor_down:
   inc cursor_y
   ; Y wraps at 240

@@ -250,6 +250,7 @@ main:
   sta cursor_y
   ; show the screen
   jsr ms_clear_all
+  jsr init_cursor
   jsr update_cursor
   jsr ppu_update
   ; main loop
