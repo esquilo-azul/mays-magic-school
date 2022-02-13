@@ -2,8 +2,8 @@ MS_MAX_COUNT = 16
 
 .segment "ZEROPAGE"
 
-ms_data_y: .res MS_MAX_COUNT
-ms_data_x: .res MS_MAX_COUNT
+ms_y: .res MS_MAX_COUNT
+ms_x: .res MS_MAX_COUNT
 ms_curr: .res 1
 
 ; All metasprites have two sprites.
@@ -20,7 +20,7 @@ ms_draw:
 
 @y_calculation:
   ldx ms_curr
-  lda ms_data_y, X
+  lda ms_y, X
   sec
   sbc #5 ; Y-5
   tay
@@ -58,7 +58,7 @@ ms_draw:
 @x_0:
   sprite_byte_offset_to_x ms_curr_sprite_0, SPRITE_X_OFFSET
   ldy ms_curr
-  lda ms_data_x, Y
+  lda ms_x, Y
   sec
   sbc #4 ; X-4
   sta oam, X
@@ -66,7 +66,7 @@ ms_draw:
 @x_1:
   sprite_byte_offset_to_x ms_curr_sprite_1, SPRITE_X_OFFSET
   ldy ms_curr
-  lda ms_data_x, Y
+  lda ms_x, Y
   clc
   adc #4 ; X+4
   sta oam, X

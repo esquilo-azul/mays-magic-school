@@ -61,11 +61,11 @@ update_cursor:
 
 @set_y:
   lda cursor_y
-  sta ms_data_y, X
+  sta ms_y, X
 
 @set_x:
   lda cursor_x
-  sta ms_data_x, X
+  sta ms_x, X
 
 @set_current:
   lda CURSOR_MSI
