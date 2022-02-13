@@ -301,6 +301,7 @@ main:
 @draw:
   ; draw everything and finish the frame
   jsr update_cursor
+  jsr ms_process_all
   jsr ppu_update
   ; keep doing this forever!
   jmp @loop

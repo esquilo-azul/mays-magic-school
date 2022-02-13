@@ -23,6 +23,18 @@ ms_process:
 @end_routine:
   rts
 
+ms_process_all:
+  lda #0
+  sta ms_curr
+@loop:
+  jsr ms_process
+
+  inc ms_curr
+  cmp ms_curr
+  bcc @loop
+
+  rts
+
 ms_update_sprites:
   ; two sprites centred around the currently selected tile
   ; y position (note, needs to be one line higher than sprite's appearance)
