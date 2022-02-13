@@ -67,6 +67,10 @@ update_cursor:
   lda cursor_x
   sta ms_x, X
 
+@set_type:
+  lda #CURSOR_MSTI
+  sta ms_type, X
+
 @set_current:
   lda CURSOR_MSI
   sta ms_curr

@@ -4,6 +4,7 @@ MS_MAX_COUNT = 16
 
 ms_y: .res MS_MAX_COUNT
 ms_x: .res MS_MAX_COUNT
+ms_type: .res MS_MAX_COUNT
 ms_curr: .res 1
 
 ; All metasprites have two sprites.
@@ -35,14 +36,19 @@ ms_update_sprites:
   tya
   sta oam, X
 
+@tile_calculation:
+  ldy ms_curr
+  ldx ms_type, Y
+  ldy mst_tile, X
+
 @tile_0:
   sprite_byte_offset_to_x ms_curr_sprite_0, SPRITE_T_OFFSET
-  lda #1
+  tya
   sta oam, X
 
 @tile_1:
   sprite_byte_offset_to_x ms_curr_sprite_1, SPRITE_T_OFFSET
-  lda #1
+  tya
   sta oam, X
 
 @attributes_0:
