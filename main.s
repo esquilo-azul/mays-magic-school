@@ -248,7 +248,7 @@ main:
   lda #120
   sta cursor_y
   ; show the screen
-  jsr draw_cursor
+  jsr update_cursor
   jsr ppu_update
   ; main loop
 @loop:
@@ -299,7 +299,7 @@ main:
   :
 @draw:
   ; draw everything and finish the frame
-  jsr draw_cursor
+  jsr update_cursor
   jsr ppu_update
   ; keep doing this forever!
   jmp @loop

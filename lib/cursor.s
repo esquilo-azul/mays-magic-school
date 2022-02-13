@@ -26,9 +26,7 @@ snap_cursor:
   :
   rts
 
-draw_cursor:
-  ; four sprites centred around the currently selected tile
-  ; y position (note, needs to be one line higher than sprite's appearance)
+update_cursor:
   ldx CURSOR_MSI
 
   lda cursor_y
