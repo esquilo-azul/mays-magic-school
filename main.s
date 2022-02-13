@@ -38,7 +38,7 @@
 ;
 
 .include "eac-ca65-nes-lib/main.s"
-.include "metasprites.s"
+.include "lib/metasprites.s"
 
 .define CURSOR_MSI #$00
 
