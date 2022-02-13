@@ -76,7 +76,7 @@ reset:
   sei       ; mask interrupts
   lda #0
   sta PPUCTRL ; disable NMI
-  sta $2001 ; disable rendering
+  sta PPUMASK ; disable rendering
   sta $4015 ; disable APU sound
   sta $4010 ; disable DMC IRQ
   lda #$40
@@ -85,7 +85,7 @@ reset:
   ldx #$FF
   txs       ; initialize stack
   ; wait for first vblank
-  bit $2002
+  bit PPUSTATUS
   vblank_wait
   ; clear all RAM to 0
   ram_clear
@@ -125,17 +125,9 @@ temp:           .res 1 ; temporary variable
 nmt_update: .res 256 ; nametable update entry buffer for PPU update
 palette:    .res 32  ; palette buffer for PPU update
 
-.segment "OAM"
-oam: .res 256        ; sprite OAM data to be uploaded by DMA
-
 .segment "CODE"
 nmi:
-  ; save registers
-  pha
-  txa
-  pha
-  tya
-  pha
+  push_registers
   ; prevent NMI re-entry
   lda nmi_lock
   beq :+
@@ -153,27 +145,23 @@ nmi:
   cmp #2 ; nmi_ready == 2 turns rendering off
   bne :+
     lda #%00000000
-    sta $2001
+    sta PPUMASK
     ldx #0
     stx nmi_ready
     jmp @ppu_update_end
   :
-  ; sprite OAM DMA
-  ldx #0
-  stx $2003
-  lda #>oam
-  sta $4014
+  oam_dma
   ; palettes
   lda #%10101000
   sta PPUCTRL ; set horizontal nametable increment
-  lda $2002
+  lda PPUSTATUS
   lda #$3F
-  sta $2006
-  stx $2006 ; set PPU address to $3F00
+  sta PPUADDR
+  stx PPUADDR ; set PPU address to $3F00
   ldx #0
   :
     lda palette, X
-    sta $2007
+    sta PPUDATA
     inx
     cpx #32
     bcc :-
@@ -183,13 +171,13 @@ nmi:
   bcs @scroll
   @nmt_update_loop:
     lda nmt_update, X
-    sta $2006
+    sta PPUADDR
     inx
     lda nmt_update, X
-    sta $2006
+    sta PPUADDR
     inx
     lda nmt_update, X
-    sta $2007
+    sta PPUDATA
     inx
     cpx nmt_update_len
     bcc @nmt_update_loop
@@ -201,12 +189,12 @@ nmi:
   ora #%10101000
   sta PPUCTRL
   lda scroll_x
-  sta $2005
+  sta PPUSCROLL
   lda scroll_y
-  sta $2005
+  sta PPUSCROLL
   ; enable rendering
   lda #%00011110
-  sta $2001
+  sta PPUMASK
   ; flag PPU update complete
   ldx #0
   stx nmi_ready
@@ -216,13 +204,7 @@ nmi:
   lda #0
   sta nmi_lock
 @nmi_end:
-  ; restore registers and return
-  pla
-  tay
-  pla
-  tax
-  pla
-  rti
+  pull_registers
 
 ;
 ; irq
@@ -270,13 +252,13 @@ ppu_off:
 ;   Y = 64- 95 nametable $2800
 ;   Y = 96-127 nametable $2C00
 ppu_address_tile:
-  lda $2002 ; reset latch
+  lda PPUSTATUS ; reset latch
   tya
   lsr
   lsr
   lsr
   ora #$20 ; high bits of Y + $20
-  sta $2006
+  sta PPUADDR
   tya
   asl
   asl
@@ -286,7 +268,7 @@ ppu_address_tile:
   sta temp
   txa
   ora temp
-  sta $2006 ; low bits of Y + X
+  sta PPUADDR ; low bits of Y + X
   rts
 
 ; ppu_update_tile: can be used with rendering on, sets the tile at X/Y to tile A next time you call ppu_update
@@ -652,18 +634,18 @@ draw_cursor:
 
 setup_background:
   ; first nametable, start by clearing to empty
-  lda $2002 ; reset latch
+  lda PPUSTATUS ; reset latch
   lda #$20
-  sta $2006
+  sta PPUADDR
   lda #$00
-  sta $2006
+  sta PPUADDR
   ; empty nametable
   lda #0
   ldy #30 ; 30 rows
   :
     ldx #32 ; 32 columns
     :
-      sta $2007
+      sta PPUDATA
       dex
       bne :-
     dey
@@ -671,7 +653,7 @@ setup_background:
   ; set all attributes to 0
   ldx #64 ; 64 bytes
   :
-    sta $2007
+    sta PPUDATA
     dex
     bne :-
   ; fill in an area in the middle with 1/2 checkerboard
@@ -685,7 +667,7 @@ setup_background:
     ; write a line of checkerboard
     ldx #8
     :
-      sta $2007
+      sta PPUDATA
       eor #$3
       inx
       cpx #(32-8)
@@ -696,15 +678,15 @@ setup_background:
     bcc :--
   ; second nametable, fill with simple pattern
   lda #$24
-  sta $2006
+  sta PPUADDR
   lda #$00
-  sta $2006
+  sta PPUADDR
   lda #$00
   ldy #30
   :
     ldx #32
     :
-      sta $2007
+      sta PPUDATA
       clc
       adc #1
       and #3
@@ -721,7 +703,7 @@ setup_background:
   :
     ldx #16
     :
-      sta $2007
+      sta PPUDATA
       dex
       bne :-
     clc
