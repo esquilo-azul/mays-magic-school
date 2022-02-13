@@ -29,13 +29,20 @@ snap_cursor:
 update_cursor:
   ldx CURSOR_MSI
 
+@set_y:
   lda cursor_y
   sta ms_data_y, X
 
+@set_x:
   lda cursor_x
   sta ms_data_x, X
 
+@set_current:
   lda CURSOR_MSI
   sta ms_curr
+
+@call_draw:
   jsr ms_draw
+
+@return:
   rts
