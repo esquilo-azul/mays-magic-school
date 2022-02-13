@@ -6,6 +6,17 @@ cursor_y: .res 1
 
 .segment "CODE"
 
+move_cursor_up:
+  dec cursor_y
+  ; Y wraps at 240
+  lda cursor_y
+  cmp #240
+  bcc :+
+    lda #239
+    sta cursor_y
+  :
+  rts
+
 ; snap_cursor: snap cursor to nearest tile
 snap_cursor:
   lda cursor_x
