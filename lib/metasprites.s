@@ -53,10 +53,23 @@ ms_process_all:
 
   rts
 
-ms_update_sprites:
-  ; two sprites centred around the currently selected tile
-  ; y position (note, needs to be one line higher than sprite's appearance)
-  jsr ms_sprites_set
+
+.macro ms_update_sprites_xy
+@x_0:
+  sprite_byte_offset_to_x ms_curr_sprite_0, SPRITE_X_OFFSET
+  ldy ms_curr
+  lda ms_x, Y
+  sec
+  sbc #4 ; X-4
+  sta oam, X
+
+@x_1:
+  sprite_byte_offset_to_x ms_curr_sprite_1, SPRITE_X_OFFSET
+  ldy ms_curr
+  lda ms_x, Y
+  clc
+  adc #4 ; X+4
+  sta oam, X
 
 @y_calculation:
   ldx ms_curr
@@ -74,6 +87,14 @@ ms_update_sprites:
   sprite_byte_offset_to_x ms_curr_sprite_1, SPRITE_Y_OFFSET
   tya
   sta oam, X
+.endmacro
+
+ms_update_sprites:
+  ; two sprites centred around the currently selected tile
+  ; y position (note, needs to be one line higher than sprite's appearance)
+  jsr ms_sprites_set
+
+  ms_update_sprites_xy
 
 @tile_calculation:
   ldy ms_curr
@@ -98,22 +119,6 @@ ms_update_sprites:
 @attributes_1:
   sprite_byte_offset_to_x ms_curr_sprite_1, SPRITE_A_OFFSET
   lda #%01000000 ; horizontal flip
-  sta oam, X
-
-@x_0:
-  sprite_byte_offset_to_x ms_curr_sprite_0, SPRITE_X_OFFSET
-  ldy ms_curr
-  lda ms_x, Y
-  sec
-  sbc #4 ; X-4
-  sta oam, X
-
-@x_1:
-  sprite_byte_offset_to_x ms_curr_sprite_1, SPRITE_X_OFFSET
-  ldy ms_curr
-  lda ms_x, Y
-  clc
-  adc #4 ; X+4
   sta oam, X
 
 @return:
