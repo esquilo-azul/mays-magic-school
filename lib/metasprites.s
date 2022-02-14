@@ -12,11 +12,15 @@ ms_curr: .res 1
 ms_curr_sprite_0: .res 1
 ms_curr_sprite_1: .res 1
 
+.macro ms_x_load attribute
+  ldx ms_curr
+  lda attribute, X
+.endmacro
+
 .segment "CODE"
 
 ms_clear:
   lda #DISABLED_MSTI
-  ldx ms_curr
   sta ms_type, X
   rts
 
@@ -33,8 +37,7 @@ ms_clear_all:
   rts
 
 ms_process:
-  ldx ms_curr
-  lda ms_type, X
+  ms_x_load ms_type
   cmp #DISABLED_MSTI
   beq @end_routine
   jsr ms_update_sprites
@@ -98,8 +101,7 @@ ms_process_all:
   sta oam, X
 
 @y_calculation:
-  ldx ms_curr
-  lda ms_y, X
+  ms_x_load ms_y
   sec
   sbc #5 ; Y-5
   tay
