@@ -17,6 +17,11 @@ ms_curr_sprite_1: .res 1
   lda attribute, X
 .endmacro
 
+.macro ms_y_load attribute
+  ldy ms_curr
+  lda attribute, Y
+.endmacro
+
 .segment "CODE"
 
 ms_clear:
@@ -58,8 +63,7 @@ ms_process_all:
 
 .macro ms_update_sprites_tiles
 @tile_calculation:
-  ldy ms_curr
-  ldx ms_type, Y
+  ms_y_load ms_type
   ldy mst_tile, X
 
 @tile_0:
@@ -86,16 +90,14 @@ ms_process_all:
 .macro ms_update_sprites_xy
 @x_0:
   sprite_byte_offset_to_x ms_curr_sprite_0, SPRITE_X_OFFSET
-  ldy ms_curr
-  lda ms_x, Y
+  ms_y_load ms_x
   sec
   sbc #4 ; X-4
   sta oam, X
 
 @x_1:
   sprite_byte_offset_to_x ms_curr_sprite_1, SPRITE_X_OFFSET
-  ldy ms_curr
-  lda ms_x, Y
+  ms_y_load ms_x
   clc
   adc #4 ; X+4
   sta oam, X
