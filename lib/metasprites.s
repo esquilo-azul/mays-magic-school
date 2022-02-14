@@ -120,17 +120,16 @@ ms_update_sprites:
   rts
 
 ms_sprites_set:
-  ; First sprite
+@first_sprite:
   lda ms_curr
   asl
   asl
   sta ms_curr_sprite_0
-
-  ; Second sprite
+@second_sprite:
   lda ms_curr
   adc #1
   asl
   asl
   sta ms_curr_sprite_1
-
+@return:
   rts
