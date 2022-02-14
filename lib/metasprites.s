@@ -22,6 +22,11 @@ ms_curr_sprite_1: .res 1
   lda attribute, Y
 .endmacro
 
+.macro ms_x_store attribute
+  ldx ms_curr
+  sta attribute, X
+.endmacro
+
 .segment "CODE"
 
 ms_clear:
