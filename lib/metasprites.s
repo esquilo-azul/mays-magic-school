@@ -1,9 +1,15 @@
 MS_MAX_COUNT = 16
 
+MS_FACE_UP = 0
+MS_FACE_RIGHT = 1
+MS_FACE_DOWN = 2
+MS_FACE_LEFT = 3
+
 .segment "ZEROPAGE"
 
 ms_y: .res MS_MAX_COUNT
 ms_x: .res MS_MAX_COUNT
+ms_face: .res MS_MAX_COUNT
 ms_type: .res MS_MAX_COUNT
 ms_curr: .res 1
 
