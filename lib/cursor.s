@@ -62,7 +62,7 @@ snap_cursor:
   :
   rts
 
-update_cursor:
+cursor_xy_to_metasprite_xy:
   ldx CURSOR_MSI
 
 @set_y:

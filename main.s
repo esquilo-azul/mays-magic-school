@@ -219,7 +219,7 @@ main:
   ; show the screen
   jsr ms_clear_all
   jsr init_cursor
-  jsr update_cursor
+  jsr cursor_xy_to_metasprite_xy
   jsr ppu_update
   ; main loop
 @loop:
@@ -237,7 +237,7 @@ main:
   joy1_down KEY_A, push_a
 @draw:
   ; draw everything and finish the frame
-  jsr update_cursor
+  jsr cursor_xy_to_metasprite_xy
   jsr ms_process_all
   jsr ppu_update
   ; keep doing this forever!
