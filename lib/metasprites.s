@@ -57,6 +57,7 @@ ms_process:
   ms_x_load ms_type
   cmp #DISABLED_MSTI
   beq @end_routine
+  jsr ms_update_xy
   jsr ms_update_sprites
 @end_routine:
   rts
@@ -71,6 +72,51 @@ ms_process_all:
   cmp ms_curr
   bcc @loop
 
+  rts
+
+ms_update_xy:
+
+@set_x_as_current:
+  ldx ms_curr
+
+@face_check:
+  lda ms_face, X
+  cmp #MS_FACE_UP
+  beq @move_up
+  cmp #MS_FACE_RIGHT
+  beq @move_right
+  cmp #MS_FACE_DOWN
+  beq @move_down
+  cmp #MS_FACE_LEFT
+  beq @move_left
+  rts
+
+@move_up:
+  lda ms_y, X
+  sec
+  sbc ms_speed, X
+  sta ms_y, X
+  rts
+
+@move_right:
+  lda ms_x, X
+  clc
+  adc ms_speed, X
+  sta ms_x, X
+  rts
+
+@move_down:
+  lda ms_y, X
+  clc
+  adc ms_speed, X
+  sta ms_y, X
+  rts
+
+@move_left:
+  lda ms_x, X
+  sec
+  sbc ms_speed, X
+  sta ms_x, X
   rts
 
 .macro ms_update_sprites_tiles
