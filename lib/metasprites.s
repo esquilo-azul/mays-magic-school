@@ -10,6 +10,7 @@ MS_FACE_LEFT = 3
 ms_y: .res MS_MAX_COUNT
 ms_x: .res MS_MAX_COUNT
 ms_face: .res MS_MAX_COUNT
+ms_speed: .res MS_MAX_COUNT
 ms_type: .res MS_MAX_COUNT
 ms_curr: .res 1
 
