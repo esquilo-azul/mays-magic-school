@@ -81,3 +81,17 @@ cursor_xy_to_metasprite_xy:
 
 @return:
   rts
+
+metasprite_xy_to_cursor_xy:
+  ldx #CURSOR_MSI
+
+@set_y:
+  lda ms_y, X
+  sta cursor_y
+
+@set_x:
+  lda ms_x, X
+  sta cursor_x
+
+@return:
+  rts
