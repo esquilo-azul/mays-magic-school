@@ -1,4 +1,4 @@
-.define CURSOR_MSI #$00
+CURSOR_MSI = $00
 
 .segment "ZEROPAGE"
 cursor_x: .res 1
@@ -8,7 +8,7 @@ cursor_y: .res 1
 
 init_cursor:
   lda #CURSOR_MSTI
-  ldx CURSOR_MSI
+  ldx #CURSOR_MSI
   sta ms_type, X
   rts
 
@@ -63,7 +63,7 @@ snap_cursor:
   rts
 
 cursor_xy_to_metasprite_xy:
-  ldx CURSOR_MSI
+  ldx #CURSOR_MSI
 
 @set_y:
   lda cursor_y
