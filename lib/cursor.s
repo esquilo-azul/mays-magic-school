@@ -1,4 +1,6 @@
 CURSOR_MSI = $00
+CURSOR_INITIAL_X = 128
+CURSOR_INITIAL_Y = 120
 
 .segment "ZEROPAGE"
 cursor_x: .res 1
@@ -10,7 +12,15 @@ init_cursor:
   lda #CURSOR_MSTI
   ldx #CURSOR_MSI
   sta ms_type, X
+  jsr reset_cursor_xy
   jsr stop_cursor
+  rts
+
+reset_cursor_xy:
+  lda #CURSOR_INITIAL_X
+  sta cursor_x
+  lda #CURSOR_INITIAL_Y
+  sta cursor_y
   rts
 
 stop_cursor:

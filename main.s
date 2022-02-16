@@ -211,11 +211,6 @@ main:
     sta palette, X
   for_x_asc_end #32
   jsr setup_background
-  ; center the cursor
-  lda #128
-  sta cursor_x
-  lda #120
-  sta cursor_y
   ; show the screen
   jsr ms_clear_all
   jsr init_cursor
