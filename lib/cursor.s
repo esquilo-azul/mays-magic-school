@@ -10,6 +10,7 @@ init_cursor:
   lda #CURSOR_MSTI
   ldx CURSOR_MSI
   sta ms_type, X
+  rts
 
 move_cursor_down:
   inc cursor_y
