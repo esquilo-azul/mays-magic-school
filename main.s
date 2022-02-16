@@ -41,7 +41,6 @@
 .include "lib/ppu.s"
 .include "lib/metasprites_types.s"
 .include "lib/metasprites.s"
-.include "lib/gamepad.s"
 .include "lib/cursor.s"
 .include "lib/background.s"
 
@@ -76,38 +75,7 @@ nes_header
 
 .segment "CODE"
 reset:
-  sei       ; mask interrupts
-  lda #0
-  sta PPUCTRL ; disable NMI
-  sta PPUMASK ; disable rendering
-  sta $4015 ; disable APU sound
-  sta $4010 ; disable DMC IRQ
-  lda #$40
-  sta $4017 ; disable APU IRQ
-  cld       ; disable decimal mode
-  ldx #$FF
-  txs       ; initialize stack
-  ; wait for first vblank
-  bit PPUSTATUS
-  vblank_wait
-  ; clear all RAM to 0
-  ram_clear
-  ; place all sprites offscreen at Y=255
-  lda #255
-  ldx #0
-  :
-    sta oam, X
-    inx
-    inx
-    inx
-    inx
-    bne :-
-  ; wait for second vblank
-  vblank_wait
-  ; NES is initialized, ready to begin!
-  ; enable the NMI for graphical updates, and jump to our main program
-  lda #%10101000
-  sta PPUCTRL
+  nes_reset
   jmp main
 
 ;
@@ -255,51 +223,18 @@ main:
   jsr ppu_update
   ; main loop
 @loop:
-  ; read gamepad
-  jsr gamepad_poll
-  ; respond to gamepad state
-  lda gamepad
-  and #PAD_START
-  beq :+
-    jsr push_start
-    jmp @draw ; start trumps everything, don't check other buttons
-  :
-  jsr release_start ; releasing start restores scroll
-  lda gamepad
-  and #PAD_U
-  beq :+
-    jsr move_cursor_up
-  :
-  lda gamepad
-  and #PAD_D
-  beq :+
-    jsr move_cursor_down
-  :
-  lda gamepad
-  and #PAD_L
-  beq :+
-    jsr move_cursor_left
-  :
-  lda gamepad
-  and #PAD_R
-  beq :+
-    jsr move_cursor_right
-  :
-  lda gamepad
-  and #PAD_SELECT
-  beq :+
-    jsr push_select
-  :
-  lda gamepad
-  and #PAD_B
-  beq :+
-    jsr push_b
-  :
-  lda gamepad
-  and #PAD_A
-  beq :+
-    jsr push_a
-  :
+  ; read joy1_current
+  jsr joy1_poll
+  ; respond to joy1_current state
+  joy1_down KEY_START, push_start
+  joy1_release KEY_START, release_start ; releasing start restores scroll
+  joy1_down KEY_UP, move_cursor_up
+  joy1_down KEY_DOWN, move_cursor_down
+  joy1_down KEY_LEFT, move_cursor_left
+  joy1_down KEY_RIGHT, move_cursor_right
+  joy1_down KEY_SELECT, push_select
+  joy1_down KEY_B, push_b
+  joy1_down KEY_A, push_a
 @draw:
   ; draw everything and finish the frame
   jsr update_cursor
@@ -314,9 +249,9 @@ push_select:
   jsr setup_background
   ; wait for user to release select before continuing
   :
-    jsr gamepad_poll
-    lda gamepad
-    and #PAD_SELECT
+    jsr joy1_poll
+    lda joy1_current
+    and #KEY_SELECT
     bne :-
   rts
 
