@@ -10,6 +10,12 @@ init_cursor:
   lda #CURSOR_MSTI
   ldx #CURSOR_MSI
   sta ms_type, X
+  jsr stop_cursor
+  rts
+
+stop_cursor:
+  lda #0
+  sta ms_speed, X
   rts
 
 move_cursor_down:
