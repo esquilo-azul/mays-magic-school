@@ -27,10 +27,11 @@ init_cursor:
   rts
 
 reset_cursor_xy:
+  ldx #CURSOR_MSI
   lda #CURSOR_INITIAL_X
-  sta cursor_x
+  sta ms_x, X
   lda #CURSOR_INITIAL_Y
-  sta cursor_y
+  sta ms_y, Y
   rts
 
 stop_cursor:
@@ -39,34 +40,16 @@ stop_cursor:
   rts
 
 move_cursor_down:
-  inc cursor_y
-  ; Y wraps at 240
-  lda cursor_y
-  cmp #240
-  bcc :+
-    lda #0
-    sta cursor_y
-  :
-  rts
+  move_cursor MS_FACE_DOWN
 
 move_cursor_left:
-  dec cursor_x
-  rts
+  move_cursor MS_FACE_LEFT
 
 move_cursor_right:
-  inc cursor_x
-  rts
+  move_cursor MS_FACE_RIGHT
 
 move_cursor_up:
-  dec cursor_y
-  ; Y wraps at 240
-  lda cursor_y
-  cmp #240
-  bcc :+
-    lda #239
-    sta cursor_y
-  :
-  rts
+  move_cursor MS_FACE_UP
 
 ; snap_cursor: snap cursor to nearest tile
 snap_cursor:
@@ -86,6 +69,7 @@ snap_cursor:
     lda #0
     sta cursor_y
   :
+  jsr cursor_xy_to_metasprite_xy
   rts
 
 cursor_xy_to_metasprite_xy:

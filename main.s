@@ -214,10 +214,11 @@ main:
   ; show the screen
   jsr ms_clear_all
   jsr init_cursor
-  jsr cursor_xy_to_metasprite_xy
   jsr ppu_update
   ; main loop
 @loop:
+  jsr metasprite_xy_to_cursor_xy
+  jsr stop_cursor
   ; read joy1_current
   jsr joy1_poll
   ; respond to joy1_current state
@@ -232,7 +233,6 @@ main:
   joy1_down KEY_A, push_a
 @draw:
   ; draw everything and finish the frame
-  jsr cursor_xy_to_metasprite_xy
   jsr ms_process_all
   jsr ppu_update
   ; keep doing this forever!
