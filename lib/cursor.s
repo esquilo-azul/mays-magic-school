@@ -1,6 +1,16 @@
 CURSOR_MSI = $00
 CURSOR_INITIAL_X = 128
 CURSOR_INITIAL_Y = 120
+CURSOR_SPEED = 1
+
+.macro move_cursor face
+  ldx #CURSOR_MSI
+  lda #face
+  sta ms_face, X
+  lda #CURSOR_SPEED
+  sta ms_speed
+  rts
+.endmacro
 
 .segment "ZEROPAGE"
 cursor_x: .res 1
