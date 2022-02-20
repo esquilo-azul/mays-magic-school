@@ -289,8 +289,7 @@ push_b:
   lsr
   tay ; Y = cursor_y / 8
   lda #4
-  jsr ppu_update_tile ; puts tile 4 at X/Y
-  rts
+  jmp ppu_update_tile ; puts tile 4 at X/Y
 
 push_a:
   jsr snap_cursor
@@ -350,7 +349,7 @@ push_a:
   ldx temp_x
   ldy temp_y
   lda #5
-  jsr ppu_update_tile
+  jmp ppu_update_tile
   rts
 
 ;

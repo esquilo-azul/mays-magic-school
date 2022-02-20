@@ -23,8 +23,7 @@ init_cursor:
   ldx #CURSOR_MSI
   sta ms_type, X
   jsr reset_cursor_xy
-  jsr stop_cursor
-  rts
+  jmp stop_cursor
 
 reset_cursor_xy:
   ldx #CURSOR_MSI
@@ -69,8 +68,7 @@ snap_cursor:
     lda #0
     sta cursor_y
   :
-  jsr cursor_xy_to_metasprite_xy
-  rts
+  jmp cursor_xy_to_metasprite_xy
 
 cursor_xy_to_metasprite_xy:
   ldx #CURSOR_MSI
