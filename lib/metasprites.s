@@ -132,6 +132,7 @@ ms_update_xy:
 @tile_1:
   sprite_byte_offset_to_x ms_curr_sprite_1, SPRITE_T_OFFSET
   tya
+  adc #2
   sta oam, X
 
 @attributes_0:
@@ -141,7 +142,7 @@ ms_update_xy:
 
 @attributes_1:
   sprite_byte_offset_to_x ms_curr_sprite_1, SPRITE_A_OFFSET
-  lda #%01000000 ; horizontal flip
+  lda #%00000000 ; no flip
   sta oam, X
 .endmacro
 
