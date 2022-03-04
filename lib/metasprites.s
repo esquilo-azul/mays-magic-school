@@ -121,7 +121,7 @@ ms_update_xy:
 
 .macro ms_update_sprites_tiles
 @tile_calculation:
-  ms_y_load ms_type
+  ms_x_load ms_type
   ldy mst_tile, X
 
 @tile_0:
