@@ -22,6 +22,8 @@ init_cursor:
   lda #CURSOR_MSTI
   ldx #CURSOR_MSI
   sta ms_type, X
+  lda #MAY_STOP_D_0
+  sta ms_metatile, X
   jsr reset_cursor_xy
   jmp stop_cursor
 

@@ -10,6 +10,7 @@ MS_FACE_LEFT = 3
 ms_y: .res MS_MAX_COUNT
 ms_x: .res MS_MAX_COUNT
 ms_face: .res MS_MAX_COUNT
+ms_metatile: .res MS_MAX_COUNT
 ms_speed: .res MS_MAX_COUNT
 ms_type: .res MS_MAX_COUNT
 ms_curr: .res 1
@@ -120,18 +121,14 @@ ms_update_xy:
   rts
 
 .macro ms_update_sprites_tiles
-@tile_calculation:
-  ms_x_load ms_type
-  ldy mst_tile, X
-
 @tile_0:
   sprite_byte_offset_to_x ms_curr_sprite_0, SPRITE_T_OFFSET
-  tya
+  ms_y_load ms_metatile
   sta oam, X
 
 @tile_1:
   sprite_byte_offset_to_x ms_curr_sprite_1, SPRITE_T_OFFSET
-  tya
+  ms_y_load ms_metatile
   adc #2
   sta oam, X
 
