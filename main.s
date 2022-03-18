@@ -38,7 +38,6 @@
 ;
 
 .include "eac-ca65-nes-lib/main.s"
-.include "lib/sprites_metatiles.s"
 .include "lib/memory_map.s"
 .include "lib/ppu.s"
 .include "lib/metasprites_types.s"
