@@ -128,7 +128,7 @@ main:
   joy1_down KEY_RIGHT, move_cursor_right
   joy1_down KEY_SELECT, push_select
   joy1_down KEY_B, push_b
-  joy1_down KEY_A, push_a
+  joy1_down KEY_A, draw_ring
 @draw:
   ; draw everything and finish the frame
   jsr ms_process_all
@@ -163,7 +163,7 @@ push_b:
   lda #4
   jmp ppu_update_tile ; puts tile 4 at X/Y
 
-push_a:
+draw_ring:
   jsr snap_cursor
   lda cursor_x
   lsr
