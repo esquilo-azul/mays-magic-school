@@ -7,18 +7,18 @@ temp:           .res 1 ; temporary variable
 ; ppu_update: waits until next NMI, turns rendering on (if not already), uploads OAM, palette, and nametable update to PPU
 ppu_update:
   lda #1
-  sta nmi_ready
+  sta ppu_update_status
   :
-    lda nmi_ready
+    lda ppu_update_status
     bne :-
   rts
 
 ; ppu_off: waits until next NMI, turns rendering off (now safe to write PPU directly via $2007)
 ppu_off:
   lda #2
-  sta nmi_ready
+  sta ppu_update_status
   :
-    lda nmi_ready
+    lda ppu_update_status
     bne :-
   rts
 

@@ -10,16 +10,16 @@ nmi:
   lda #1
   sta nmi_lock
   ;
-  lda nmi_ready
-  bne :+ ; nmi_ready == 0 not ready to update PPU
+  lda ppu_update_status
+  bne :+ ; ppu_update_status == 0 not ready to update PPU
     jmp @ppu_update_end
   :
-  cmp #2 ; nmi_ready == 2 turns rendering off
+  cmp #2 ; ppu_update_status == 2 turns rendering off
   bne :+
     lda #%00000000
     sta PPUMASK
     ldx #0
-    stx nmi_ready
+    stx ppu_update_status
     jmp @ppu_update_end
   :
   oam_dma
@@ -69,7 +69,7 @@ nmi:
   sta PPUMASK
   ; flag PPU update complete
   ldx #0
-  stx nmi_ready
+  stx ppu_update_status
 @ppu_update_end:
   ; if this engine had music/sound, this would be a good place to play it
   ; unlock re-entry flag
