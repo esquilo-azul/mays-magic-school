@@ -61,33 +61,7 @@ nes_header
 .incbin "background.chr"
 .incbin "sprite.chr"
 
-;
-; vectors placed at top 6 bytes of memory area
-;
-
-.segment "VECTORS"
-.word nmi
-.word reset
-.word irq
-
-;
-; reset routine
-;
-
-.segment "CODE"
-reset:
-  nes_reset
-  jmp main
-
-.include "lib/nmi.s"
-
-;
-; irq
-;
-
-.segment "CODE"
-irq:
-  rti
+.include "lib/vectors.s"
 
 ;
 ; main
