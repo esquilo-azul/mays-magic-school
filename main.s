@@ -40,7 +40,6 @@
 .include "eac-ca65-nes-lib/main.s"
 .include "lib/memory_map.s"
 .include "lib/ppu.s"
-.include "lib/metasprites_types.s"
 .include "lib/metasprites.s"
 .include "lib/cursor.s"
 .include "lib/background.s"
