@@ -1,6 +1,6 @@
 .segment "ZEROPAGE"
 
-temp:           .res 1 ; temporary variable
+ppu_temp0:           .res 1 ; temporary variable
 
 .segment "CODE"
 
@@ -41,9 +41,9 @@ ppu_address_tile:
   asl
   asl
   asl
-  sta temp
+  sta ppu_temp0
   txa
-  ora temp
+  ora ppu_temp0
   sta PPUADDR ; low bits of Y + X
   rts
 
@@ -67,9 +67,9 @@ ppu_update_tile:
   asl
   asl
   asl
-  sta temp
+  sta ppu_temp0
   pla ; recover X value (but put in A)
-  ora temp
+  ora ppu_temp0
   sta nmt_update, X
   inx
   pla ; recover A value (tile)
