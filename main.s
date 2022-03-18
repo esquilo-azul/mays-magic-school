@@ -85,7 +85,6 @@ reset:
 
 .segment "ZEROPAGE"
 nmi_lock:       .res 1 ; prevents NMI re-entry
-nmi_count:      .res 1 ; is incremented every NMI
 nmi_ready:      .res 1 ; set to 1 to push a PPU frame update, 2 to turn rendering off next NMI
 nmt_update_len: .res 1 ; number of bytes in nmt_update buffer
 scroll_x:       .res 1 ; x scroll position
@@ -106,8 +105,6 @@ nmi:
   :
   lda #1
   sta nmi_lock
-  ; increment frame counter
-  inc nmi_count
   ;
   lda nmi_ready
   bne :+ ; nmi_ready == 0 not ready to update PPU
