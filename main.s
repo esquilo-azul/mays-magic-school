@@ -127,7 +127,7 @@ main:
   joy1_down KEY_LEFT, move_cursor_left
   joy1_down KEY_RIGHT, move_cursor_right
   joy1_down KEY_SELECT, push_select
-  joy1_down KEY_B, push_b
+  joy1_down KEY_B, draw_heart
   joy1_down KEY_A, draw_ring
 @draw:
   ; draw everything and finish the frame
@@ -148,7 +148,7 @@ push_select:
     bne :-
   rts
 
-push_b:
+draw_heart:
   jsr snap_cursor
   lda cursor_x
   lsr
