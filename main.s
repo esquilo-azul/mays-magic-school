@@ -60,10 +60,6 @@ nes_header
 ; main
 ;
 
-.segment "ZEROPAGE"
-temp_x:   .res 1
-temp_y:   .res 1
-
 .segment "CODE"
 main:
   ; setup
