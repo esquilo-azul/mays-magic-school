@@ -22,7 +22,7 @@ nmi:
     stx ppu_update_status
     jmp @ppu_update_end
   :
-  oam_dma
+  oam_dump
   ; palettes
   lda #%10101000
   sta PPUCTRL ; set horizontal nametable increment
