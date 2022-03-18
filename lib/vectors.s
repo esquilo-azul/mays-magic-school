@@ -16,7 +16,7 @@ reset:
   nes_reset
   jmp main
 
-.include "nmi.s"
+.include "vectors/nmi.s"
 
 ;
 ; irq
