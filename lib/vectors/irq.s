@@ -1,0 +1,4 @@
+.segment "CODE"
+
+irq:
+  rti

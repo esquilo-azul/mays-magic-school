@@ -17,11 +17,4 @@ reset:
   jmp main
 
 .include "vectors/nmi.s"
-
-;
-; irq
-;
-
-.segment "CODE"
-irq:
-  rti
+.include "vectors/irq.s"
