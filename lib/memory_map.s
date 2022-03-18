@@ -4,4 +4,5 @@
 .include "memory_map/nmi.s"
 .include "memory_map/nametables.s"
 .include "memory_map/palettes.s"
+.include "memory_map/scroll.s"
 .include "memory_map/sprites_metatiles.s"
