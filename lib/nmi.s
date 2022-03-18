@@ -32,7 +32,7 @@ nmi:
   stx PPUADDR ; set PPU address to $3F00
   ldx #0
   :
-    lda palette, X
+    lda example_palette, X
     sta PPUDATA
     inx
     cpx #32

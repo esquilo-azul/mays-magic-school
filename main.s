@@ -63,10 +63,6 @@ nes_header
 .segment "CODE"
 main:
   ; setup
-  for_x_asc_start
-    lda example_palette, X
-    sta palette, X
-  for_x_asc_end #32
   jsr setup_background
   ; show the screen
   jsr ms_clear_all
