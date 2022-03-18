@@ -53,14 +53,7 @@
 
 nes_header
 
-;
-; CHR ROM
-;
-
-.segment "TILES"
-.incbin "background.chr"
-.incbin "sprite.chr"
-
+.include "lib/characters.s"
 .include "lib/vectors.s"
 
 ;
