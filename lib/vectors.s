@@ -7,14 +7,6 @@
 .word reset
 .word irq
 
-;
-; reset routine
-;
-
-.segment "CODE"
-reset:
-  nes_reset
-  jmp main
-
+.include "vectors/reset.s"
 .include "vectors/nmi.s"
 .include "vectors/irq.s"
