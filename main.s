@@ -84,13 +84,11 @@ reset:
 ;
 
 .segment "ZEROPAGE"
-nmt_update_len: .res 1 ; number of bytes in nmt_update buffer
 scroll_x:       .res 1 ; x scroll position
 scroll_y:       .res 1 ; y scroll position
 scroll_nmt:     .res 1 ; nametable select (0-3 = $2000,$2400,$2800,$2C00)
 
 .segment "BSS"
-nmt_update: .res 256 ; nametable update entry buffer for PPU update
 palette:    .res 32  ; palette buffer for PPU update
 
 .segment "CODE"
