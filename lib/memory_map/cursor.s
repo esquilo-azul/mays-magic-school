@@ -1,0 +1,12 @@
+CURSOR_MSI = $00
+CURSOR_INITIAL_X = 128
+CURSOR_INITIAL_Y = 120
+CURSOR_SPEED = 1
+CURSOR_MSTI = 0
+CURSOR_TILE = 1
+
+.segment "ZEROPAGE"
+
+; Cursor
+cursor_x: .res 1
+cursor_y: .res 1

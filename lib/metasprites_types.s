@@ -1,7 +1,4 @@
 DISABLED_MSTI = $FF
 
-CURSOR_MSTI = 0
-CURSOR_TILE = 1
-
 .segment "RODATA"
 mst_tile: .byte CURSOR_TILE
