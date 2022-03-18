@@ -148,21 +148,6 @@ push_select:
     bne :-
   rts
 
-draw_heart:
-  jsr snap_cursor
-  lda cursor_x
-  lsr
-  lsr
-  lsr
-  tax ; X = cursor_x / 8
-  lda cursor_y
-  lsr
-  lsr
-  lsr
-  tay ; Y = cursor_y / 8
-  lda #4
-  jmp ppu_update_tile ; puts tile 4 at X/Y
-
 ;
 ; end of file
 ;
