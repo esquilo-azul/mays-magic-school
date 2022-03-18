@@ -163,67 +163,6 @@ push_b:
   lda #4
   jmp ppu_update_tile ; puts tile 4 at X/Y
 
-draw_ring:
-  jsr snap_cursor
-  lda cursor_x
-  lsr
-  lsr
-  lsr
-  sta temp_x ; cursor_x / 8
-  lda cursor_y
-  lsr
-  lsr
-  lsr
-  sta temp_y ; cursor_y / 8
-  ; draw a ring of 8 tiles around the cursor
-  dec temp_x ; x-1
-  dec temp_y ; y-1
-  ldx temp_x
-  ldy temp_y
-  lda #5
-  jsr ppu_update_tile
-  inc temp_x ; x
-  ldx temp_x
-  ldy temp_y
-  lda #6
-  jsr ppu_update_tile
-  inc temp_x ; x+1
-  ldx temp_x
-  ldy temp_y
-  lda #5
-  jsr ppu_update_tile
-  dec temp_x
-  dec temp_x ; x-1
-  inc temp_y ; y
-  ldx temp_x
-  ldy temp_y
-  lda #6
-  jsr ppu_update_tile
-  inc temp_x
-  inc temp_x ; x+1
-  ldx temp_x
-  ldy temp_y
-  lda #6
-  jsr ppu_update_tile
-  dec temp_x
-  dec temp_x ; x-1
-  inc temp_y ; y+1
-  ldx temp_x
-  ldy temp_y
-  lda #5
-  jsr ppu_update_tile
-  inc temp_x ; x
-  ldx temp_x
-  ldy temp_y
-  lda #6
-  jsr ppu_update_tile
-  inc temp_x ; x+1
-  ldx temp_x
-  ldy temp_y
-  lda #5
-  jmp ppu_update_tile
-  rts
-
 ;
 ; end of file
 ;
