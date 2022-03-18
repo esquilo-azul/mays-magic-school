@@ -60,10 +60,6 @@ nes_header
 ; main
 ;
 
-.segment "RODATA"
-example_palette:
-.include "lib/palettes.s"
-
 .segment "ZEROPAGE"
 temp_x:   .res 1
 temp_y:   .res 1
