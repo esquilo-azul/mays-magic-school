@@ -18,7 +18,7 @@ nmi:
   bne :+
     lda #%00000000
     sta PPUMASK
-    ldx #0
+    ldx #PPU_UPDATE_STATUS_DONE
     stx ppu_update_status
     jmp @ppu_update_end
   :
@@ -68,7 +68,7 @@ nmi:
   lda #%00011110
   sta PPUMASK
   ; flag PPU update complete
-  ldx #0
+  ldx #PPU_UPDATE_STATUS_DONE
   stx ppu_update_status
 @ppu_update_end:
   ; if this engine had music/sound, this would be a good place to play it
