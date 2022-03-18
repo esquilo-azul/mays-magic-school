@@ -7,4 +7,3 @@
 .include "memory_map/ppu.s"
 .include "memory_map/scroll.s"
 .include "memory_map/sprites_metatiles.s"
-.include "memory_map/temp.s"
