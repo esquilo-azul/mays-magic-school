@@ -13,14 +13,6 @@ ppu_update:
     bne :-
   rts
 
-; ppu_skip: waits until next NMI, does not update PPU
-ppu_skip:
-  lda nmi_count
-  :
-    cmp nmi_count
-    beq :-
-  rts
-
 ; ppu_off: waits until next NMI, turns rendering off (now safe to write PPU directly via $2007)
 ppu_off:
   lda #2
