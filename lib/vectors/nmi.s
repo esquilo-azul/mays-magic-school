@@ -19,20 +19,24 @@
   pull_registers
 .endmacro
 
-.segment "CODE"
-
-nmi:
-  nmi_lockable_start
+.macro nmi_jump_ppu_update_if_off jump_to
   lda ppu_update_status
   bne :+ ; ppu_update_status == 0 not ready to update PPU
-    jmp @ppu_update_end
+    jmp jump_to
   :
   cmp #2 ; ppu_update_status == 2 turns rendering off
   bne :+
     ppu_render_off
     ppu_update_done
-    jmp @ppu_update_end
+    jmp jump_to
   :
+.endmacro
+
+.segment "CODE"
+
+nmi:
+  nmi_lockable_start
+  nmi_jump_ppu_update_if_off @ppu_update_end
   oam_dump
   palettes_dump
   nametable_dump
