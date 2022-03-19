@@ -17,7 +17,7 @@ scroll_bottom_right:
   :
   rts
 
-release_start:
+reset_scroll:
   lda #0
   sta scroll_x
   sta scroll_y

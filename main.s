@@ -78,7 +78,7 @@ main:
   jsr joy1_poll
   ; respond to joy1_current state
   joy1_down KEY_START, scroll_bottom_right
-  joy1_release KEY_START, release_start ; releasing start restores scroll
+  joy1_release KEY_START, reset_scroll ; releasing start restores scroll
   joy1_down KEY_UP, move_cursor_up
   joy1_down KEY_DOWN, move_cursor_down
   joy1_down KEY_LEFT, move_cursor_left
