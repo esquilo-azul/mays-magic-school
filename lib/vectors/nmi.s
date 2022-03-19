@@ -24,24 +24,7 @@ nmi:
   :
   oam_dump
   palettes_dump
-  ; nametable update
-  ldx #0
-  cpx nmt_update_len
-  bcs @scroll
-  @nmt_update_loop:
-    lda nmt_update, X
-    sta PPUADDR
-    inx
-    lda nmt_update, X
-    sta PPUADDR
-    inx
-    lda nmt_update, X
-    sta PPUDATA
-    inx
-    cpx nmt_update_len
-    bcc @nmt_update_loop
-  lda #0
-  sta nmt_update_len
+  nametable_dump
 @scroll:
   lda scroll_nmt
   and #%00000011 ; keep only lowest 2 bits to prevent error

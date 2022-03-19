@@ -41,6 +41,7 @@
 .include "lib/memory_map.s"
 .include "lib/palettes.s"
 .include "lib/ppu.s"
+.include "lib/nametables.s"
 .include "lib/metasprites.s"
 .include "lib/cursor.s"
 .include "lib/background.s"
