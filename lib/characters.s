@@ -1,4 +1,4 @@
 .segment "TILES"
 
-.incbin "background.chr"
-.incbin "sprite.chr"
+.incbin "res/background.chr"
+.incbin "res/sprite.chr"
