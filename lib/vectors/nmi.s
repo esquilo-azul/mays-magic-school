@@ -3,17 +3,26 @@
   sta nmi_lock
 .endmacro
 
-.segment "CODE"
-
-nmi:
+.macro nmi_lockable_start
   push_registers
-  ; prevent NMI re-entry
   lda nmi_lock
   beq :+
     jmp @nmi_end
   :
   nmi_lock_write 1
-  ;
+.endmacro
+
+.macro nmi_lockable_end
+  ; unlock re-entry flag
+  nmi_lock_write 0
+@nmi_end:
+  pull_registers
+.endmacro
+
+.segment "CODE"
+
+nmi:
+  nmi_lockable_start
   lda ppu_update_status
   bne :+ ; ppu_update_status == 0 not ready to update PPU
     jmp @ppu_update_end
@@ -33,7 +42,4 @@ nmi:
   ppu_update_done
 @ppu_update_end:
   ; if this engine had music/sound, this would be a good place to play it
-  ; unlock re-entry flag
-  nmi_lock_write 0
-@nmi_end:
-  pull_registers
+  nmi_lockable_end
