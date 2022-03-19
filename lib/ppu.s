@@ -1,3 +1,15 @@
+; Enable rendering.
+.macro ppu_render_on
+  lda #%00011110
+  sta PPUMASK
+.endmacro
+
+; Disable rendering.
+.macro ppu_render_off
+  lda #%00000000
+  sta PPUMASK
+.endmacro
+
 ; Flag ppu_update_status as done.
 .macro ppu_update_done
   ldx #PPU_UPDATE_STATUS_DONE

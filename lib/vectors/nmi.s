@@ -16,8 +16,7 @@ nmi:
   :
   cmp #2 ; ppu_update_status == 2 turns rendering off
   bne :+
-    lda #%00000000
-    sta PPUMASK
+    ppu_render_off
     ppu_update_done
     jmp @ppu_update_end
   :
@@ -26,9 +25,7 @@ nmi:
   nametable_dump
 @scroll:
   scroll_dump
-  ; enable rendering
-  lda #%00011110
-  sta PPUMASK
+  ppu_render_on
   ppu_update_done
 @ppu_update_end:
   ; if this engine had music/sound, this would be a good place to play it
