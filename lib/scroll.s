@@ -1,4 +1,4 @@
-push_start:
+scroll_bottom_right:
   inc scroll_x
   inc scroll_y
   ; Y wraps at 240
