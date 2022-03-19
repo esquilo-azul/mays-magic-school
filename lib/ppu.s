@@ -1,7 +1,3 @@
-.segment "ZEROPAGE"
-
-ppu_temp0:           .res 1 ; temporary variable
-
 .segment "CODE"
 
 ; ppu_update: waits until next NMI, turns rendering on (if not already), uploads OAM, palette, and nametable update to PPU
