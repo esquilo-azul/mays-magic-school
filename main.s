@@ -51,9 +51,7 @@
 ; iNES header
 ;
 
-.segment "HEADER"
-
-nes_header
+nes_header INES_MAPPER_NROM, INES_MIRROR_VERTICAL, INES_SRAM_ABSENT
 
 .include "lib/characters.s"
 .include "lib/vectors.s"
