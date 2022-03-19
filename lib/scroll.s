@@ -1,3 +1,14 @@
+.macro scroll_dump
+  lda scroll_nmt
+  and #%00000011 ; keep only lowest 2 bits to prevent error
+  ora #%10101000
+  sta PPUCTRL
+  lda scroll_x
+  sta PPUSCROLL
+  lda scroll_y
+  sta PPUSCROLL
+.endmacro
+
 scroll_bottom_right:
   inc scroll_x
   inc scroll_y

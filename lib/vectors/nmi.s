@@ -26,14 +26,7 @@ nmi:
   palettes_dump
   nametable_dump
 @scroll:
-  lda scroll_nmt
-  and #%00000011 ; keep only lowest 2 bits to prevent error
-  ora #%10101000
-  sta PPUCTRL
-  lda scroll_x
-  sta PPUSCROLL
-  lda scroll_y
-  sta PPUSCROLL
+  scroll_dump
   ; enable rendering
   lda #%00011110
   sta PPUMASK
