@@ -1,3 +1,9 @@
+; Flag ppu_update_status as done.
+.macro ppu_update_done
+  ldx #PPU_UPDATE_STATUS_DONE
+  stx ppu_update_status
+.endmacro
+
 .segment "CODE"
 
 ; ppu_update: waits until next NMI, turns rendering on (if not already), uploads OAM, palette, and nametable update to PPU

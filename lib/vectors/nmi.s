@@ -18,8 +18,7 @@ nmi:
   bne :+
     lda #%00000000
     sta PPUMASK
-    ldx #PPU_UPDATE_STATUS_DONE
-    stx ppu_update_status
+    ppu_update_done
     jmp @ppu_update_end
   :
   oam_dump
@@ -30,9 +29,7 @@ nmi:
   ; enable rendering
   lda #%00011110
   sta PPUMASK
-  ; flag PPU update complete
-  ldx #PPU_UPDATE_STATUS_DONE
-  stx ppu_update_status
+  ppu_update_done
 @ppu_update_end:
   ; if this engine had music/sound, this would be a good place to play it
   ; unlock re-entry flag
