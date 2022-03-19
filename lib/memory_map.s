@@ -6,4 +6,4 @@
 .include "memory_map/palettes.s"
 .include "memory_map/ppu.s"
 .include "memory_map/scroll.s"
-.include "memory_map/sprites_metatiles.s"
+.include "../res/sprite_metatiles.s"
