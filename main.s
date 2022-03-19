@@ -46,13 +46,7 @@
 .include "lib/cursor.s"
 .include "lib/background.s"
 .include "lib/scroll.s"
-
-;
-; iNES header
-;
-
-nes_header INES_MAPPER_NROM, INES_MIRROR_VERTICAL, INES_SRAM_ABSENT
-
+.include "lib/header.s"
 .include "lib/characters.s"
 .include "lib/vectors.s"
 .include "lib/main.s"
