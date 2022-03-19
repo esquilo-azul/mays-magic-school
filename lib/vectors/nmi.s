@@ -21,10 +21,8 @@
 
 .macro nmi_jump_ppu_update_if_off jump_to
   lda ppu_update_status
-  bne :+ ; ppu_update_status == 0 not ready to update PPU
-    jmp jump_to
-  :
-  cmp #2 ; ppu_update_status == 2 turns rendering off
+  beq jump_to
+  cmp #PPU_UPDATE_STATUS_OFF ; ppu_update_status == 2 turns rendering off
   bne :+
     ppu_render_off
     ppu_update_done
